@@ -64,7 +64,7 @@ class Mima
       if @@commands[cmd.command].nil?
         raise "Unknown command '#{cmd.command}'"
       else
-        @@commands[cmd.command].execute self, cmd.resolved_argument(self)
+        @@commands[cmd.command(self)].execute self, cmd.resolved_argument(self)
       end
       if @program_counter_was_just_set
         @program_counter_was_just_set = false
@@ -75,7 +75,15 @@ class Mima
   end
 
   def opcode_for(command)
-    @@commands[command].opcode
+    begin
+      @@commands[command].opcode
+    rescue
+      raise "Unknown name in memory cell #{@program_counter}"
+    end
+  end
+
+  def command_with(opcode)
+    @@commands.select { |c, cmd| cmd.opcode == opcode and c != :ds }.first[0]
   end
 
   def resolve_label(label)
@@ -97,6 +105,10 @@ class Mima
   def program_counter=(c)
     @program_counter = c
     @program_counter_was_just_set = true
+  end
+
+  def print_memory
+    @memory.to_a.sort{ |a, b| a[0] <=> b[0] }.each{ |entry| puts "#{entry.first}:  ".rjust(7) + entry.last.to_s }
   end
 
 private

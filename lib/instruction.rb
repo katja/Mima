@@ -2,7 +2,6 @@ require 'core_ext'
 
 class Instruction
 
-  attr_reader :command
   attr_writer :value
 
   def initialize(command, argument = nil, label = nil)
@@ -29,5 +28,19 @@ class Instruction
     else
       machine.resolve_label(@argument)
     end
+  end
+
+  def command(machine = nil)
+    if @value and machine
+      shift = (@value >> 20) > 15 ? 16 : 20
+      @argument = (@value - ((@value >> shift) << shift)).to_s
+      @command = machine.command_with(@value >> shift)
+    else
+      @command
+    end
+  end
+
+  def to_s
+    "#{@command.upcase}".to_s.ljust(5) + "#{(@value || @argument)}".to_s.ljust(15) + @label.to_s
   end
 end

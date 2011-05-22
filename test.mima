@@ -1,14 +1,17 @@
 EINS:   DS   1
+zwei: DS 2
 M_eins DS   -1
 MAX    =    6
+sechs DS 2
 ZAEHLER: DS 5;Zählvariable
 
 *      =    128
 ;Hauptprogramm
-START:   LDV ZAEHLER ;UND NOCH EINER
+START:   LDV blub ;UND NOCH EINER
          ADD EINS
-         STV ZAEHLER
-         EQL MAX ;EIN ERNEUTER KOMMENTAR
+         STV blub
+Blub:    LDV 0
+         EQL sechs ;EIN ERNEUTER KOMMENTAR
          JMN STOP
          JMP START
 STOP:    HALT
